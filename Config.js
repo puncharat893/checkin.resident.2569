@@ -4,6 +4,6 @@
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwfDGkzQkEpiA8FT-Sg1HPFJFLPEDnaADsd79RmiV7CnNuTkEtaJboXNqLA2BEziLDObg/exec';
 // checkin
 //LIFF_ID
-    const LIFF_ID = '2008040462-gVP0VXlB'; // LIFF ID Checkin
-    const LIFF_HISTORY = '2008040462-q4XEpg4y'; // LIFF ID history
-    const LIFF_REGISTER = '2008040462-mP3Db7aX'; // LIFF ID register
+    const LIFF_ID = '2009669854-7Jo8LwTx'; // LIFF ID Checkin
+    const LIFF_HISTORY = '2009669854-vZvBFFIW'; // LIFF ID history
+    const LIFF_REGISTER = '2009669854-MHp6Vgbr'; // LIFF ID register
