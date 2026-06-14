@@ -6,11 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ลงทะเบียน</title>
-    <!-- นำเข้า Tailwind CSS สำหรับการออกแบบ -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- นำเข้า SweetAlert2 สำหรับการแสดงการแจ้งเตือน -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- นำเข้า LIFF SDK สำหรับการเชื่อมต่อกับ LINE -->
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 </head>
 
@@ -19,12 +16,10 @@
         <form>
             <div class="p-8">
                 <div class="mb-5 text-center">
-                    <!-- แสดงภาพโปรไฟล์ที่อัพโหลด -->
                     <div class="mx-auto w-32 h-32 mb-2 border rounded-lg relative bg-slate-100 mb-4 shadow-inset">
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                             alt="Default Image" id="preview" class="h-32 w-32 object-cover rounded-lg">
                     </div>
-                    <!-- ปุ่มสำหรับอัพโหลดรูปภาพ -->
                     <label for="file"
                         class="cursor-pointer inline-flex justify-between items-center p-2 rounded-lg text-slate-800 bg-slate-100 hover:bg-slate-300">
                         อัพโหลดรูป
@@ -34,28 +29,23 @@
                 </div>
                 <div class="flex flex-col">
                     <div class="mb-4">
-                        <!-- ฟิลด์สำหรับใส่ Line ID -->
                         <input type="text"
                             class="input-field w-full  bg-slate-200 p-2 text-slate-500 text-sm text-center rounded-lg"
-                            id="userlineId" placeholder="lineId" name="userlineId">
+                            id="userlineId" placeholder="lineId" name="userlineId" readonly>
                     </div>
                     <div class="mb-4">
-                        <!-- ฟิลด์สำหรับใส่ชื่อ-สกุล -->
                         <input type="text" class="input-field w-full border border-slate-300 p-2 text-md rounded-lg"
                             id="nameId" placeholder="ชื่อ-สกุล" name="nameId" required>
                     </div>
                     <div class="mb-4">
-                        <!-- ฟิลด์สำหรับใส่รหัสพนักงาน -->
                         <input type="text" class="input-field w-full border border-slate-300 p-2 text-md rounded-lg"
                             id="keynumberId" placeholder="รหัสประจำตัว นสพ." name="keynumberId" required>
                     </div>
                     <div class="mb-6">
-                        <!-- ฟิลด์สำหรับใส่ตำแหน่ง -->
                         <input type="text" class="input-field w-full border border-slate-300 p-2 text-md rounded-lg"
                             id="keynumber2Id" placeholder="ชั้นปี" name="keynumber2Id" required>
                     </div>
                 </div>
-                <!-- ปุ่มสำหรับบันทึกข้อมูล -->
                 <button type="button" id="submitBtn"
                     class="bg-slate-800 text-center w-full text-white py-4 px-4 rounded-lg hover:bg-blue-700">บันทึกข้อมูล</button>
             </div>
@@ -64,38 +54,42 @@
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script src="Config.js"></script>
     <script>
-        
-        /// ฟังก์ชันสำหรับเริ่มต้น LIFF SDK
-        async function initializeLiff() {
-            // ใส่รหัสลงไปตรงๆ เพื่อป้องกันโทรศัพท์มือถือหาไฟล์ Config.js ไม่เจอครับ
-            await liff.init({ liffId: "2009669854-MHp6Vgbr" });
+        // กำหนดตัวแปรสำหรับใช้ในฟังก์ชันต่างๆ (ประกาศไว้ด้านบนสุดเพื่อให้ฟังก์ชันหาเจอ)
+        const userlineIdInput = document.getElementById("userlineId");
+        const nameIdInput = document.getElementById("nameId");
+        const keynumberIdInput = document.getElementById("keynumberId");
+        const keynumber2IdInput = document.getElementById("keynumber2Id");
+        const fileInput = document.getElementById("file");
+        const imgPreview = document.getElementById("preview");
+        const submitBtn = document.getElementById("submitBtn");
 
-                // บังคับให้รอเช็กสถานะการ LogIn บนมือถือให้เรียบร้อยก่อน
+        // ฟังก์ชันเริ่มต้น LIFF SDK เมื่อโหลดหน้าเว็บ
+        window.onload = function () {
+            initializeLiff();
+        };
+
+        // ฟังก์ชันสำหรับเริ่มต้น LIFF SDK
+        async function initializeLiff() {
+            try {
+                // 1. บังคับใส่เลข LIFF ID ตรงๆ ป้องกันโหลดสคริปต์ลำดับสับสนบนมือถือ
+                await liff.init({ liffId: "2009669854-MHp6Vgbr" });
+
+                // 2. เช็กสถานะ LogIn ถ้ายังไม่ได้สิทธิ์ บังคับเด้งหน้าจอเขียวทันที
                 if (!liff.isLoggedIn()) {
-                    liff.login(); // ถ้าเปิดในไลน์ครั้งแรกแล้วยังไม่มีสิทธิ์ ให้สั่งล็อกอินก่อน
+                    liff.login();
                 } else {
-                    await getUserProfile(); // ถ้าสิทธิ์พร้อมแล้ว ให้ไปดึงโปรไฟล์ทันที
+                    // 3. ถ้าสิทธิ์พร้อม ยุบเอา getUserProfile มารวมไว้ที่นี่เพื่อความเร็ว
+                    const profile = await liff.getProfile();
+                    if (profile && profile.userId) {
+                        userlineIdInput.value = profile.userId; // ใส่รหัสตัว U ลงกล่อง
+                        console.log('ดึง LINE ID บนมือถือสำเร็จ:', profile.userId);
+                    }
                 }
             } catch (error) {
                 console.error('LIFF Initialization พัง:', error);
             }
         }
 
-        // ฟังก์ชันสำหรับดึงข้อมูลโปรไฟล์ของผู้ใช้จาก LINE
-        async function getUserProfile() {
-            try {
-                const profile = await liff.getProfile();
-                if (profile && profile.userId) {
-                    document.getElementById('userlineId').value = profile.userId; // กำหนดค่า Line ID ในฟิลด์
-                    console.log('ดึงรหัส LINE ID บนมือถือสำเร็จ:', profile.userId);
-                } else {
-                    console.warn('ดึงโปรไฟล์สำเร็จ แต่ไม่มีค่า userId ส่งกลับมา');
-                }
-            } catch (error) {
-                console.error('เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์:', error); 
-            }
-        }
-        
         async function sendFlexMessage() {
             const flexMessage = {
                 type: 'flex',
@@ -148,7 +142,7 @@
                                     },
                                     {
                                         type: 'text',
-                                        text: document.getElementById('nameId').value,
+                                        text: nameIdInput.value,
                                         size: 'sm',
                                         color: '#111111',
                                         align: 'end',
@@ -184,7 +178,7 @@
                                     },
                                     {
                                         type: 'text',
-                                        text: document.getElementById('keynumberId').value,
+                                        text: keynumberIdInput.value,
                                         size: 'sm',
                                         color: '#111111',
                                         align: 'end',
@@ -220,7 +214,7 @@
                                     },
                                     {
                                         type: 'text',
-                                        text: document.getElementById('keynumber2Id').value,
+                                        text: keynumber2IdInput.value,
                                         size: 'sm',
                                         color: '#111111',
                                         align: 'end',
@@ -236,16 +230,6 @@
 
             await liff.sendMessages([flexMessage]);
         }
-
-        // กำหนดตัวแปรสำหรับใช้ในฟังก์ชันต่างๆ
-        let url = `${WEB_APP_MEMBER_URL}`;
-        let fileInput = document.getElementById("file");
-        let imgPreview = document.getElementById("preview");
-        let userlineIdInput = document.getElementById("userlineId");
-        let nameIdInput = document.getElementById("nameId");
-        let keynumberIdInput = document.getElementById("keynumberId");
-        let keynumber2IdInput = document.getElementById("keynumber2Id");
-        let submitBtn = document.getElementById("submitBtn");
 
         // ฟังก์ชันสำหรับแปลงไฟล์เป็น Base64
         function getBase64(file) {
@@ -312,6 +296,8 @@
 
                 try {
                     let obj;
+                    // ดึงค่า URL มาจากไฟล์ Config.js ที่โหลดมา (ต้องประกาศ URL ภายในอีเวนต์นี้เพื่อใช้ค่าล่าสุด)
+                    let url = `${WEB_APP_MEMBER_URL}`; 
 
                     if (fileInput.files.length > 0) { // ถ้ามีการอัพโหลดรูปภาพ
                         let file = fileInput.files[0];
