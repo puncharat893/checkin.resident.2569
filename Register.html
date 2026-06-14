@@ -64,19 +64,20 @@
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script src="Config.js"></script>
     <script>
-        // ฟังก์ชันเริ่มต้น LIFF SDK เมื่อโหลดหน้าเว็บ
-        window.onload = function () {
-            initializeLiff();
-        };
-
-        // ฟังก์ชันสำหรับเริ่มต้น LIFF SDK
+        
+        // ฟังก์ชันสำหรับเริ่มต้น LIFF SDK (เวอร์ชันแก้ไขเพื่อรองรับโทรศัพท์มือถือ)
         async function initializeLiff() {
-            await liff.init({ liffId: `${LIFF_REGISTER}` });
+            try {
+                await liff.init({ liffId: `${LIFF_REGISTER}` });
 
-            if (liff.isLoggedIn()) {
-                getUserProfile(); // ถ้าเข้าสู่ระบบแล้วให้ดึงข้อมูลโปรไฟล์
-            } else {
-                liff.login(); // ถ้ายังไม่ได้เข้าสู่ระบบ ให้เข้าสู่ระบบก่อน
+                // บังคับให้รอเช็กสถานะการ LogIn บนมือถือให้เรียบร้อยก่อน
+                if (!liff.isLoggedIn()) {
+                    liff.login(); // ถ้าเปิดในไลน์ครั้งแรกแล้วยังไม่มีสิทธิ์ ให้สั่งล็อกอินก่อน
+                } else {
+                    await getUserProfile(); // ถ้าสิทธิ์พร้อมแล้ว ให้ไปดึงโปรไฟล์ทันที
+                }
+            } catch (error) {
+                console.error('LIFF Initialization พัง:', error);
             }
         }
 
@@ -84,12 +85,17 @@
         async function getUserProfile() {
             try {
                 const profile = await liff.getProfile();
-                document.getElementById('userlineId').value = profile.userId; // กำหนดค่า Line ID ในฟิลด์
+                if (profile && profile.userId) {
+                    document.getElementById('userlineId').value = profile.userId; // กำหนดค่า Line ID ในฟิลด์
+                    console.log('ดึงรหัส LINE ID บนมือถือสำเร็จ:', profile.userId);
+                } else {
+                    console.warn('ดึงโปรไฟล์สำเร็จ แต่ไม่มีค่า userId ส่งกลับมา');
+                }
             } catch (error) {
-                console.error('เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์:', error); // แสดงข้อผิดพลาดถ้าดึงข้อมูลไม่สำเร็จ
+                console.error('เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์:', error); 
             }
         }
-
+        
         async function sendFlexMessage() {
             const flexMessage = {
                 type: 'flex',
