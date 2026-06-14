@@ -1,5 +1,5 @@
 // ประกาศค่า URL ที่ใช้เชื่อมต่อกับ Web App
-    const WEB_APP_MEMBER_URL = 'https://script.google.com/macros/s/AKfycbzugZx9F84hbfnQlv26f7QRWzK83zd2Lr_wJN4krrTGtX9FdcN0yjLQzWETrsymyuqp/exec';
+    const WEB_APP_MEMBER_URL = 'https://script.google.com/macros/s/AKfycbzSRcgxAdCP0dllmw9KozbMSQ70CSKgtisYarjNigIbCh3-WJn5As2iSDdyb9zj-5fb6A/exec';
 // member
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby-tXChDiaVvlOmUzRlSBwk_GWtX4dgjYpvK4qMlXqGIZ3BNVLLAj26749E8-NOeE0HwA/exec';
 // checkin
