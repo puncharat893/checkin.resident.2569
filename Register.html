@@ -65,10 +65,10 @@
     <script src="Config.js"></script>
     <script>
         
-        // ฟังก์ชันสำหรับเริ่มต้น LIFF SDK (เวอร์ชันแก้ไขเพื่อรองรับโทรศัพท์มือถือ)
+        /// ฟังก์ชันสำหรับเริ่มต้น LIFF SDK
         async function initializeLiff() {
-            try {
-                await liff.init({ liffId: `${LIFF_REGISTER}` });
+            // ใส่รหัสลงไปตรงๆ เพื่อป้องกันโทรศัพท์มือถือหาไฟล์ Config.js ไม่เจอครับ
+            await liff.init({ liffId: "2009669854-MHp6Vgbr" });
 
                 // บังคับให้รอเช็กสถานะการ LogIn บนมือถือให้เรียบร้อยก่อน
                 if (!liff.isLoggedIn()) {
