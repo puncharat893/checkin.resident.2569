@@ -158,44 +158,46 @@
       </div>
     </div>
     
-   // เตรียมข้อมูลส่งไปยัง Google Apps Script หลังบ้าน
-        const payload = {
-            action: "insertData",
-            user: userId,
-            name: userName,
-            role: studentId,
-            job: jobType,
-            note: noteValue,
-            time: currentTimeStr,
-            address: addressText,
-            lat: latitude,
-            long: longitude,
-            base64: base64Image,
-            nameImage: userName
-        };
+   <script>
+    // เตรียมข้อมูลส่งไปยัง Google Apps Script หลังบ้าน
+    const payload = {
+        action: "insertData",
+        user: userId,
+        name: userName,
+        role: studentId,
+        job: jobType,
+        note: noteValue,
+        time: currentTimeStr,
+        address: addressText,
+        lat: latitude,
+        long: longitude,
+        base64: base64Image,
+        nameImage: userName
+    };
 
-        // ลิงก์สะพานเชื่อมไปยัง Google Apps Script หลังบ้าน
-        const url = 'https://script.google.com/macros/s/AKfycbySFpIbXjCtYGHYNAP7ddjEoc1s2FTNBE6n94rTOfV6gnoFnZPhH1Rz9-sJKSoHzcy1sQ/exec';
+    // ลิงก์สะพานเชื่อมไปยัง Google Apps Script หลังบ้าน
+    const url = 'https://script.google.com/macros/s/AKfycbySFpIbXjCtYGHYNAP7ddjEoc1s2FTNBE6n94rTOfV6gnoFnZPhH1Rz9-sJKSoHzcy1sQ/exec';
 
-        // ส่งข้อมูลออกไป
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log('Success:', data);
-            if (data.includes('Success')) {
-                alert('บันทึกเวลาเรียนสำเร็จเรียบร้อยแล้วค่ะ 🎉');
-                liff.closeWindow();
-            } else {
-                alert('เกิดข้อผิดพลาดจากระบบหลังบ้าน: ' + data);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('ส่งข้อมูลไม่สำเร็จ (Form submission failed) กรุณาลองใหม่อีกครั้งค่ะ');
-        });
+    // ส่งข้อมูลออกไป
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log('Success:', data);
+        if (data.includes('Success')) {
+            alert('บันทึกเวลาเรียนสำเร็จเรียบร้อยแล้วค่ะ 🎉');
+            liff.closeWindow();
+        } else {
+            alert('เกิดข้อผิดพลาดจากระบบหลังบ้าน: ' + data);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('ส่งข้อมูลไม่สำเร็จ (Form submission failed) กรุณาลองใหม่อีกครั้งค่ะ');
+    });
+</script>
   </div>
   <script src="Config.js"></script>
   <script>
